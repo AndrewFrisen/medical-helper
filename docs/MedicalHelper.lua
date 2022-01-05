@@ -4412,7 +4412,7 @@ function funCMD.ab(id)
 					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
 				end	
 				wait(200)
-				sampSendChat("/do Ќа плече весит мед. сумка.")
+				sampSendChat("/do ¬ нижнем €щике находитьс€ много упаковок антибиотиков.")
 				wait(1700)
 				sampSendChat("/me приоткрыл"..chsex("", "а").." нижний €щик  после чего вз€л".. chsex("", "а") .." оттуда нужное количество антибиотиков.")
 				wait(2000)
