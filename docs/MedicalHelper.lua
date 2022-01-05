@@ -4422,7 +4422,7 @@ function funCMD.ab(id)
 				wait(2000)
 				sampSendChat("/b Системно можно принимать раз в 3-5 минут.")
 				wait(1000)
-				sampProcessChatInput("/antibiotik "..id..")
+				sampProcessChatInput("/antibiotik "..id)
 			end)
 		else
 		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /ab [id игрока].", 0xEE4848)
