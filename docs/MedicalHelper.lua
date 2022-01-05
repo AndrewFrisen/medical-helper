@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
-script_authors("Kevin Hatiko and Updates by Andrew Frisen")
-script_description("Script for Ministry of Health")
-script_version("2.6.0")
+script_authors("Kevin Hatiko")
+script_description("Script for the Ministries of Health Arizona Saint Rose")
+script_version("2.6.1")
 script_properties("work-in-pause")
 setver = 1
  
@@ -4399,7 +4399,7 @@ function funCMD.ab(id)
 					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
 				end	
 				wait(2000)
-				sampSendChat("Хорошо, стоимость одной упаковки антибиотика для лечения - "..buf_rec.v.."$.")
+				sampSendChat("Хорошо, стоимость одной упаковки антибиотика для лечения будет указана на упаковке.")
 				wait(2000)
 				sampSendChat("Хорошо давайте вашу мед. карту я посмотрю стадию вашей болезни.")
 				wait(2000)
