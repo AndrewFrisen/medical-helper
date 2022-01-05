@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona Saint Rose")
-script_version("2.5.38")
+script_version("2.6.0")
 script_properties("work-in-pause")
 setver = 1
  
@@ -709,6 +709,13 @@ cmdBind = {
 		desc = "Лечение всех игроков в радиусе",
 		rank = 5,
 		rb = false
+	},
+	[25] = {
+		cmd = "/ab",
+		key = {},
+		desc = "Продажа антибиотиков",
+		rank = 4,
+		rb = false
 	}
 }
 
@@ -1146,6 +1153,7 @@ function main()
 		sampRegisterChatCommand("osm", funCMD.osm)
 		sampRegisterChatCommand("mb", funCMD.memb)
 		sampRegisterChatCommand("vac", funCMD.vac)
+		sampRegisterChatCommand("ab", funCMD.ab)
 		sampRegisterChatCommand("hme", funCMD.hme)
 		sampRegisterChatCommand("sob", funCMD.sob)
 		sampRegisterChatCommand("dep", funCMD.dep)
@@ -3654,7 +3662,13 @@ function onHotKeyCMD(id, keys)
 				elseif k == 24 then
 					funCMD.hall()
 				end
-				
+				elseif k == 25 then
+					if resTarg then
+						funCMD.ab(tostring(targID))
+					else
+						sampSetChatInputEnabled(true)
+						sampSetChatInputText("/ab ")
+					end
 			end
 		end
 	else
@@ -4370,6 +4384,50 @@ function funCMD.vac(id)
 			sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /vac [id игрока].", 0xEE4848)
 			end
 end
+function funCMD.ab(id)
+	if thread:status() ~= "dead" then 
+		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: В данный момент проигрывается отыгровка.", 0xEE4848)
+		return 
+	end
+		if id:find("(%d+)") then
+			thread = lua_thread.create(function()
+				sampSendChat("Здравствуйте, вам нужно вылечиться от короновируса?")
+				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения. (Подсказка: кол-во антибиотиков которое нужно человеку можно выяснить поделив стадию на 2)", 0xEE4848)
+				while true do
+					wait(0)
+					renderFontDrawText(font, "Выдача антибиотиков: {8ABCFA}Соглашение\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
+					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
+				end	
+				wait(2000)
+				sampSendChat("Хорошо, стоимость одной упаковки антибиотика для лечения - "..buf_rec.v.."$.")
+				wait(2000)
+				sampSendChat("Хорошо давайте вашу мед. карту я посмотрю стадию вашей болезни.")
+				wait(2000)
+				sampSendChat("/n Мед. карту можно показать командой /showmc .")
+				wait(500)
+				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения.", 0xEE4848)
+				while true do
+					wait(0)
+					renderFontDrawText(font, "Выдача антибиотиков: {8ABCFA}Соглашение\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
+					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
+				end	
+				wait(200)
+				sampSendChat("/do На плече весит мед. сумка.")
+				wait(1700)
+				sampSendChat("/me приоткрыл"..chsex("", "а").." нижний ящик  после чего взял".. chsex("", "а") .." оттуда нужное количество антибиотиков.")
+				wait(2000)
+				sampSendChat("/me легким движением левой руки протянул"..chsex("","а").." несколько упаковок с антибиотиками человеку напротив.")
+				wait(2000)
+				sampSendChat("Вот вам антибиотики, принимайте пока не пройдёт кашель, по одной капсуле в день запивая водой.")
+				wait(2000)
+				sampSendChat("/b Системно можно принимать раз в 3-5 минут.")
+				wait(1000)
+				sampProcessChatInput("/antibiotik "..id..")
+			end)
+		else
+		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /ab [id игрока].", 0xEE4848)
+		end
+end
 function funCMD.rec(id)
 	if thread:status() ~= "dead" then 
 		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: В данный момент проигрывается отыгровка.", 0xEE4848)
@@ -4857,13 +4915,14 @@ function funCMD.expel(par)
 end
 		
 function funCMD.openupd()
-	print(shell32.ShellExecuteA(nil, 'open', "http://forum.arizona-rp.com/index.php?threads/Министерство-Здравоохранения-Официальный-скрипт-для-больниц-medical-helper.1119179/", nil, nil, 1))
+	sampAddChatMessage('{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: На данный момент не поддерживается!',-1)
+	--print(shell32.ShellExecuteA(nil, 'open', "http://forum.arizona-rp.com/index.php?threads/Министерство-Здравоохранения-Официальный-скрипт-для-больниц-medical-helper.1119179/", nil, nil, 1))
 end
 
 function funCMD.update()
 	sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Производится скачивание новой версии скрипта...", 0xEE4848)
 	local dir = dirml.."/MedicalHelper.lua"
-	local url = "https://github.com/TheMrThor/MedicalHelper/blob/master/MedicalHelper.lua?raw=true"
+	local url = "https://andrewfrisen.github.io/medical-helper/MedicalHelper.lua"
 	--local url = "https://drive.google.com/uc?export=download&id=1gph2P6bWI1NZRW6TTdtXsmJtwpIX8JaC"
 	downloadUrlToFile(url, dir, function(id, status, p1, p2)
 		if status == dlstatus.STATUSEX_ENDDOWNLOAD then
@@ -4897,9 +4956,7 @@ local erTx =
 Если у Вас отключен антивирус, отсутствует анти-стиллер, то видимо что-то другое
 блокирует скачивание. Поэтому нужно будет скачать файл отдельно.
 
-Пожалуйста, посетите официальную тему скрипта на форуме Arizona RP
-Тему можно найти по следующему пути:
-{A1DF6B}forum.arizona-rp.com -> Сервер 6 -> Гос.Струк. -> Минист.Здрав. -> Официальный скрипт для больниц{FFFFFF}
+
 Скачайте автмоатический установочник.
 
 Либо скачайте файл скрипта отдельно. Ссылка для скачивания уже скопирована.
@@ -4919,7 +4976,7 @@ local erTx =
 				addOneOffSound(0, 0, 0, 1058)
 				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Произошла ошибка при скачивании обновления. Похоже, скачиванию что-то мешает.", 0xEE4848)
 				sampShowDialog(2001, "{FF0000}Ошибка обновления", erTx, "Закрыть", "", 0)
-				setClipboardText("https://github.com/TheMrThor/MedicalHelper/blob/master/MedicalHelper.lua?raw=true")
+				setClipboardText("https://andrewfrisen.github.io/medical-helper/MedicalHelper.lua")
 				updWin.v = false
 			end
 		end
@@ -4936,7 +4993,7 @@ end
 function funCMD.updateCheck()
 	sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Проверяем наличие обновлений...", 0xEE4848)
 		local dir = dirml.."/MedicalHelper/files/update.med"
-		local url = "https://raw.githubusercontent.com/TheMrThor/MedicalHelper/master/update.med"
+		local url = "https://andrewfrisen.github.io/medical-helper/update.json"
 		downloadUrlToFile(url, dir, function(id, status, p1, p2)
 			if status == dlstatus.STATUS_ENDDOWNLOADDATA then
 				lua_thread.create(function()
@@ -4962,7 +5019,7 @@ function funCMD.updateCheck()
 			end
 		end)
 		local dir = dirml.."/MedicalHelper/files/update.txt"
-		local url = "https://raw.githubusercontent.com/TheMrThor/MedicalHelper/master/update.txt"
+		local url = "https://andrewfrisen.github.io/medical-helper/update.txt"
 		downloadUrlToFile(url, dir, function(id, status, p1, p2)
 			if status == dlstatus.STATUS_ENDDOWNLOADDATA then
 				lua_thread.create(function()
