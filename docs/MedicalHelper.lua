@@ -3661,7 +3661,6 @@ function onHotKeyCMD(id, keys)
 					end
 				elseif k == 24 then
 					funCMD.hall()
-				end
 				elseif k == 25 then
 					if resTarg then
 						funCMD.ab(tostring(targID))
@@ -3669,6 +3668,7 @@ function onHotKeyCMD(id, keys)
 						sampSetChatInputEnabled(true)
 						sampSetChatInputText("/ab ")
 					end
+				end
 			end
 		end
 	else
