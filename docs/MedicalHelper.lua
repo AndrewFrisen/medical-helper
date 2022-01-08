@@ -609,7 +609,7 @@ cmdBind = {
 		cmd = "/osm",
 		key = {},
 		desc = "Произвести медицинский осмотр",
-		rank = 5,
+		rank = 3,
 		rb = false
 	},
 	[11] = {
@@ -637,28 +637,28 @@ cmdBind = {
 		cmd = "/+warn",
 		key = {},
 		desc = "Выдача выговора сотруднику",
-		rank = 8,
+		rank = 9,
 		rb = false
 	},
 	[15] = {
 		cmd = "/-warn",
 		key = {},
 		desc = "Снять выговор сотруднику",
-		rank = 8,
+		rank = 9,
 		rb = false
 	},
 	[16] = {
 		cmd = "/+mute",
 		key = {},
 		desc = "Выдать мут сотруднику",
-		rank = 8,
+		rank = 9,
 		rb = false
 	},
 	[17] = {
 		cmd = "/-mute",
 		key = {},
 		desc = "Снять мут сотруднику",
-		rank = 8,
+		rank = 9,
 		rb = false
 	},
 	[18] = {
@@ -872,15 +872,15 @@ function main()
 		else 
 			local textrp = [[
 // Цены на выдачу новой мед.карты
-#med7=10.000$
-#med14=20.000$
-#med30=32.500$
-#med60=65.000$
+#med7=15.000$
+#med14=25.000$
+#med30=40.000$
+#med60=50.000$
 // Цены на обновление мед.карты
 #medup7=15.000$
 #medup14=25.000$
-#medup30=38.000$
-#medup60=70.000$
+#medup30=40.000$
+#medup60=50.000$
 
 {sleep:0}
 Здравствуйте, Вы хотите получить медицинскую карту впервые или обновить существующую?
@@ -907,7 +907,7 @@ function main()
 #timeID=1
 [3]=30 дней
 #timeID=2
-[4]=60 дей
+[4]=60 дней
 #timeID=3
 {dialogEnd}
 
@@ -936,7 +936,7 @@ function main()
 #timeID=1
 [3]=30 дней
 #timeID=2
-[4]=60 дей
+[4]=60 дней
 #timeID=3
 {dialogEnd}
 
@@ -4847,21 +4847,6 @@ function funCMD.osm()
 				sampSendChat("/me "..chsex("вернул","вернула").." мед.карту человеку напротив")
 				sampSendChat("Спасибо, можете быть свободны")
 		end)
-end
-function funCMD.hall()
-	local maxIdInStream = sampGetMaxPlayerId(true)
-	for i = 0, maxIdInStream do
-	local result, handle = sampGetCharHandleBySampPlayerId(i)
-		if result and doesCharExist(handle) then
-			local px, py, pz = getCharCoordinates(playerPed)
-			local pxp, pyp, pzp = getCharCoordinates(handle)
-			local distance = getDistanceBetweenCoords2d(px, py, pxp, pyp)
-			if distance <= 4 then
-				sampSendChat("/heal "..i)
-			end
-		end
-	end
-	sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Вылечили всех игроков в радиусе.", 0xEE4848)
 end
 function funCMD.sob()
 	sobWin.v = not sobWin.v
