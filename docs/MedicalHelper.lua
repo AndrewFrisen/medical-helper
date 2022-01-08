@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona Saint Rose")
-script_version("2.6.1")
+script_version("2.6.1c")
 script_properties("work-in-pause")
 setver = 1
  
