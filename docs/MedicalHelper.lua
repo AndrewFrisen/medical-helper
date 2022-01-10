@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona Saint Rose")
-script_version("2.6.1c")
+script_version("2.6.2")
 script_properties("work-in-pause")
 setver = 1
  
@@ -159,8 +159,7 @@ local font = renderCreateFont("Trebuchet MS", 14, 5)
 local fontPD = renderCreateFont("Trebuchet MS", 12, 5)
 local fontH =  renderGetFontDrawHeight(font)
 local sx, sy = getScreenResolution()
---os.remove(dirml.."/MedicalHelper/files/update.txt")
---os.remove(dirml.."/MedicalHelper/files/update.med")
+
 
 local mainWin	= imgui.ImBool(false) -- Гл.окно
 local paramWin = imgui.ImBool(false) -- окно параметров
@@ -200,7 +199,8 @@ local setting = {
 	arp = false,
 	setver = 1,
 	imageUp = false,
-	imageDis = false
+	imageDis = false,
+	antibiotik = ""
 }
 local buf_nick	= imgui.ImBuffer(256)
 local buf_teg 	= imgui.ImBuffer(256)
@@ -236,6 +236,7 @@ local buf_med		= imgui.ImBuffer(10);
 local buf_upmed	= imgui.ImBuffer(10);
 local buf_rec		= imgui.ImBuffer(10);
 local buf_narko	= imgui.ImBuffer(10);
+local buf_antibiotik	= imgui.ImBuffer(10);
 local buf_tatu	= imgui.ImBuffer(10);
 --image
 local cb_imageUp	= imgui.ImBool(false)
@@ -703,13 +704,6 @@ cmdBind = {
 		rank = 5,
 		rb = false
 	},
-	[24] = {
-		cmd = "/hall",
-		key = {},
-		desc = "Лечение всех игроков в радиусе",
-		rank = 5,
-		rb = false
-	},
 	[25] = {
 		cmd = "/ab",
 		key = {},
@@ -1030,6 +1024,7 @@ function main()
 				cb_imageDis.v = set.imageDis
 				hudPing = set.hping
 				cb_hudTime.v = set.htime
+				buf_antibiotik.v = set.antibiotik
 				if set.orgl then
 					for i,v in ipairs(set.orgl) do
 						chgName.org[tonumber(i)] = u8(v)
@@ -1050,6 +1045,7 @@ function main()
 				buf_narko.v = "25000"
 				buf_tatu.v = "7000"
 				buf_rec.v = "1500"
+				buf_antibiotik.v = "10000"
 				
 				buf_time.v = u8"/me посмотрел на часы с гравировкой \"Made in China\""
 				buf_rac.v = u8"/me сняв рацию с пояса, что-то сказал в неё"
@@ -1063,6 +1059,7 @@ function main()
 			buf_narko.v = "25000"
 			buf_tatu.v = "7000"
 			buf_rec.v = "1500"
+			buf_antibiotik.v = "10000"
 			
 			buf_time.v = u8"/me посмотрел на часы с гравировкой \"Made in China\""
 			buf_rac.v = u8"/me сняв рацию с пояса, что-то сказал в неё"
@@ -1455,12 +1452,12 @@ function imgui.OnDrawFrame()
 					imgui.BeginGroup()
 						imgui.PushItemWidth(100); 
 							if imgui.InputText(u8"Лечение", buf_lec, imgui.InputTextFlags.CharsDecimal) then needSave = true end
-						--	if imgui.InputText(u8"Выдача новой мед.карты", buf_med, imgui.InputTextFlags.CharsDecimal) then needSave = true end
-						--	if imgui.InputText(u8"Обновление мед.карты", buf_upmed, imgui.InputTextFlags.CharsDecimal) then needSave = true end
 							if imgui.InputText(u8"Выдача рецептов", buf_rec, imgui.InputTextFlags.CharsDecimal) then needSave = true end
 							if imgui.InputText(u8"Лечение от наркозависимости", buf_narko, imgui.InputTextFlags.CharsDecimal) then needSave = true end
+							if imgui.InputText(u8"Стоимость одного антибиотика", buf_antibiotik, imgui.InputTextFlags.CharsDecimal) then needSave = true end
 							if imgui.InputText(u8"Сведение тату", buf_tatu, imgui.InputTextFlags.CharsDecimal) then needSave = true end
-							imgui.Text(u8"Цены на мед.карту выставляются в самой отыгровке мед.карты через переменные в подразделе 'Отыгровки'")
+							imgui.Text(u8"Цены на мед.карту выставляются в самой отыгровке...")
+							imgui.Text(u8"...мед.карты через переменные в подразделе 'Отыгровки'")
 							imgui.Spacing()
 						imgui.PopItemWidth()
 					imgui.EndGroup();
@@ -1506,6 +1503,7 @@ function imgui.OnDrawFrame()
 			setting.hping = hudPing
 			setting.orgl = {}
 			setting.rankl = {}
+			setting.antibiotik = buf_antibiotik.v
 			for i,v in ipairs(chgName.org) do
 				setting.orgl[i] = u8:decode(v)
 			end
@@ -1904,10 +1902,12 @@ function imgui.OnDrawFrame()
 					imgui.SetCursorPosX(280)
 					imgui.Text(u8"Medical Helper")
 					imgui.Spacing()
-					imgui.TextWrapped(u8"\tСкрипт был разработан для проекта Ariona Role Play с поддержкой работы на сервере Saint Rose для облегчения работы сотрудникам больниц. Благодаря этому приложению Вы получите полный комплекс автоматизации многих действий и наслаждение от пользования.\nОбновления выходят по мере добавления нововведений и исправлений ошибок.")
+					imgui.TextWrapped(u8"\tСкрипт был разработан для проекта Ariona Role Play для облегчения работы сотрудникам больниц. Благодаря этому приложению Вы получите полный комплекс автоматизации многих действий и наслаждение от пользования.\nОбновления выходят по мере добавления нововведений и исправлений ошибок.")
 					imgui.Dummy(imgui.ImVec2(0, 10))
 					imgui.Bullet()
 					imgui.TextColoredRGB("Разработчик - {FFB700}Kevin Hatiko")
+					imgui.Bullet()
+					imgui.TextColoredRGB("Человек который доделал некоторые обновления - {FFB700}Andrew Frisen")
 					imgui.Bullet()
 					imgui.TextColoredRGB("Версия скрипта - {FFB700}".. scr.version)
 					imgui.Bullet()
@@ -1916,21 +1916,21 @@ function imgui.OnDrawFrame()
 						imgui.SetCursorPosX(20)
 						imgui.Text(fa.ICON_BUG)
 						imgui.SameLine()
-						imgui.TextColoredRGB("Нашли баг или ошибку, или же хотите видеть что-то новое, напиши в группу"); imgui.SameLine(); imgui.Text(fa.ICON_ARROW_DOWN)
+						imgui.TextColoredRGB("Нашли баг или ошибку, или же хотите видеть что-то новое, напиши в вк"); imgui.SameLine(); imgui.Text(fa.ICON_ARROW_DOWN)
 						imgui.SetCursorPosX(20)
 						imgui.Text(fa.ICON_LINK)
 						imgui.SameLine()
-						imgui.TextColoredRGB("Для связи: VK: {74BAF4}vk.com/hatiko_scripts") --или Discord - {74BAF4}TheVitek#2160")
+						imgui.TextColoredRGB("Для связи: VK: {74BAF4}vk.com/andreykotovqq") --или Discord - {74BAF4}TheVitek#2160")
 							if imgui.IsItemHovered() then imgui.SetTooltip(u8"Кликните ЛКМ, чтобы скопировать, или ПКМ, чтобы открыть в браузере")  end
-							if imgui.IsItemClicked(0) then setClipboardText("https://vk.com/hatiko_scripts") end
-							if imgui.IsItemClicked(1) then print(shell32.ShellExecuteA(nil, 'open', 'https://vk.com/hatiko_scripts', nil, nil, 1)) end
+							if imgui.IsItemClicked(0) then setClipboardText("https://vk.com/andreykotovqq") end
+							if imgui.IsItemClicked(1) then print(shell32.ShellExecuteA(nil, 'open', 'https://vk.com/andreykotovqq', nil, nil, 1)) end
 							imgui.SameLine()
 							imgui.TextColoredRGB("{68E15D}(наведи){FFFFFF}  Нажав в группе на {74BAF4}\"Написать сообщение\"")
 						imgui.Spacing()
 						imgui.SetCursorPosX(20)
 						imgui.TextColored(imgui.ImColor(18, 220, 0, 200):GetVec4(), fa.ICON_MONEY)
 						imgui.SameLine()
-						imgui.TextColoredRGB("Желающие поддержать разработку денюшкой - ".."{68E15D}\"Открыть\"")
+						imgui.TextColoredRGB("Желающие кинуть разработчику на чашечку коффе - ".."{68E15D}\"Открыть\"")
 							if imgui.IsItemHovered() then imgui.SetTooltip(u8"Кликните, чтобы открыть ссылку")  end
 							if imgui.IsItemClicked(0) then print(shell32.ShellExecuteA(nil, 'open', 'https://qiwi.me/56481f57-738e-4476-afde-cee364eb7f46', nil, nil, 1)) end
 							
@@ -1948,7 +1948,6 @@ function imgui.OnDrawFrame()
 							sampAddChatMessage("", 0xEE4848)
 							sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Внимание! Подтвердите удаление командой {77DF63}/mh-delete.", 0xEE4848)
 							mainWin.v = false
-						--	sampShowDialog(1002, "{E94C4C}MedicalHelper | {8EE162}Удаление", remove, "Принял", "")
 						end
 				imgui.EndChild()
 				
@@ -2287,41 +2286,6 @@ function imgui.OnDrawFrame()
 		imgui.SameLine()
 		if imgui.IsItemClicked(0) then setClipboardText("{getNickByID:}") end
 		imgui.TextColoredRGB("{C1C1C1} - Возращает ник игрока по его ID. \n\tПример, {getNickByID:25}, вернёт ник игрока под ID 25.)")
-
-
-	--	imgui.TextColoredRGB("")
-			-- imgui.Spacing()
-			-- imgui.Bullet()
-			-- imgui.TextColoredRGB("{FF8400}{dialog}{C1C1C1} - создание собстрвенных диалогов. Более подробно ниже:")
-			-- imgui.Spacing()
-			-- imgui.Spacing()
-			-- if imgui.TreeNode(u8"Интрукция по пользованию параметром {dialog}") then
-			-- 	imgui.Separator()
-			-- 	imgui.Spacing()
-			-- 	imgui.Text(u8"С помощью следующего параметра можно создавать собственные диалоги с выбором дальнейшего\n действия. Примером такого диалога может послужить отыгровка выдачи мед.карты, где необходимо\n выбрать результат обследования (Здоровый, имеются отклонения, псих. отклонения).")
-			-- 	imgui.Spacing()
-			-- 	imgui.Text(u8"Пример написания диалога:")
-			-- 	imgui.BeginGroup()
-			-- 		imgui.PushStyleColor(imgui.Col.FrameBg, imgui.ImColor(70, 70, 70, 200):GetVec4())
-			-- 		imgui.InputTextMultiline("##dialogPar", helpDialog, imgui.ImVec2(210, 180), 16384)
-			-- 		imgui.PopStyleColor(1)
-			-- 		imgui.TextDisabled(u8"Для копирования используйте\nCtrl + C. Вставка - Ctrl + V")
-			-- 	imgui.EndGroup()
-			-- 	imgui.SameLine()
-			-- 	imgui.BeginGroup()
-			-- 			imgui.TextColoredRGB("{FF8400}{dialog}	{FFFFFF}- {EF5454}обязательный параметр{FFFFFF}, указывающий начало конструкции \nдиалога. Название прописывается после \"=\"(равно)")
-			-- 			imgui.TextColoredRGB("{FF8400}[name]=	{FFFFFF}- необязательный параметр. Указывает название самого диалога.\n Название прописывается после \"=\"(равно)")
-			-- 			imgui.TextColoredRGB("{FF8400}[1]= 		{FFFFFF}- Квадратные скорби с номером выбором являются обязятельным\n требованием. Доступно до 9 вариантов выбора. После \"=\"(равно) указывать\n текст не обязательно.")
-			-- 			imgui.TextColoredRGB("{FF8400}{dialogEnd}	{FFFFFF}- {EF5454}обязательный параметр{FFFFFF}, указывающий на конец конструкции \nдиалога.")
-			-- 			imgui.TextColoredRGB("Все необязательные параметры являются не критичными, но рекомендуется\n их указывать для визуального понимания.")
-						
-						
-			-- 			--imgui.TextColoredRGB("")
-			-- 	imgui.EndGroup()
-			-- 		imgui.TextColoredRGB("{F03636}Примечания: \n{FFFFFF}1. Текст для указанного номера отыгровки прописывать с новой строчки после номера пукнта. \n(Указано в примере)\n2. Перед и после конструкции диалога можно прописывать обычные отыгровки, а также создавать \nдополнительные диалоги.\n3. Не допускается создавать диалоги внутри самой конструкции диалога.")
-			-- 	imgui.TreePop()
-			---end
-		
 		imgui.End()
 	end
 	if spurBig.v then
@@ -2789,10 +2753,7 @@ function imgui.OnDrawFrame()
 						imgui.Spacing()
 						if imgui.Button(u8"Подать", imgui.ImVec2(225, 30)) then
 							lua_thread.create(function()
-							-- if tonumber(os.date("%M")) > 17 then --17
-							-- 	sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Gov Новости назначить можно только от 0 до 15 минут.", 0xEE4848)
-							-- 	return
-							-- end
+
 							
 								if doesFileExist(dirml.."/MedicalHelper/Департамент/"..u8:decode(dep.news[dep.newsN.v+1])..".txt") then
 								--	print(u8:decode(dep.news[dep.newsN.v+1]))
@@ -2945,8 +2906,6 @@ function imgui.OnDrawFrame()
 					if imgui.Button(fa.ICON_DOWNLOAD .. u8" Установить новую версию", imgui.ImVec2(230, 30)) then funCMD.update() end
 				end
 			end
-		--	imgui.Bullet(); imgui.SameLine()
-		--	imgui.TextColoredRGB("Было изменено вывфыв ывфывфывыв ыфвфывфы ыфвфывфы ")
 		imgui.End()
 	end
 	if mcEditWin.v then
@@ -3970,41 +3929,6 @@ lua_thread.create(function()
 	end
 end)
 end
-
--- function onScriptTerminate(scr)
--- 	print("{00FF00}Скрипт завершил работу.")
--- 	--[[
--- 	if scr == thisScript() then
-		
--- 			setting.nick = u8:decode(buf_nick.v)
--- 			setting.teg = u8:decode(buf_teg.v)
--- 			setting.org = num_org.v
--- 			setting.sex = num_sex.v
--- 			setting.rank = num_rank.v
--- 			setting.time = cb_time.v
--- 			setting.timeTx = u8:decode(buf_time.v)
--- 			setting.timeDo = cb_timeDo.v
--- 			setting.rac = cb_rac.v
--- 			setting.racTx = u8:decode(buf_rac.v)
--- 			setting.lec = buf_lec.v
--- 			setting.med = buf_med.v
--- 			setting.upmed = buf_upmed.v
--- 			setting.rec = buf_rec.v
--- 			setting.narko = buf_narko.v
--- 			setting.tatu = buf_tatu.v
--- 			setting.chat1 = cb_chat1.v
--- 			setting.chat2 = cb_chat2.v
--- 			setting.chat3 = cb_chat3.v
--- 			setting.chathud = cb_hud.v
--- 			setting.setver = setver
--- 		local f = io.open(dirml.."/MedicalHelper/MainSetting.med", "w")
--- 		f:write(encodeJson(setting))
--- 		f:flush()
--- 		f:close()
--- 	end
--- 	]]
--- end
-
 function filter(mode, filderChar)
 	local function locfil(data)
 		if mode == 0 then --
@@ -4147,131 +4071,6 @@ function funCMD.med(id)
 	if id:find("%d+") then
 		local id = id:match("(%d+)")
 	thread = lua_thread.create(function()
-		--[[
-			sampSendChat("Здравствуйте, Вы желаете получить медицинскую карту?")
-			wait(3000)
-			sampSendChat("Предоставьте пожалуйста Ваш паспорт для определения требований.")		
-			
-				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на цифру верхней панели для выбора вида мед.услуги.", 0xEE4848)
-				addOneOffSound(0, 0, 0, 1058)
-				while true do
-					wait(0)
-					renderFontDrawText(font, "Выдача мед.карты: \n{FFFFFF}[{67E56F}1{FFFFFF}] - Выдача новой\n[{67E56F}2{FFFFFF}] - Обновление", sx/5*4, sy-100, 0xFFFFFFFF)
-					if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then 
-						sampSendChat("Хорошо, я Вас "..chsex("понял","поняла")..". Вам нужно оформить новую мед.карту.")
-						wait(2200)
-						sampSendChat("Для оформления карты необходимо заплатить гос.пошлину в размере "..buf_med.v.."$, после чего мы продолжим.")
-						wait(2000)
-						sampSendChat("/n Оплатите с помощью команды /pay или /trade")
-						break 
-					end
-					if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then 
-						sampSendChat("Хорошо, я Вас "..chsex("понял","поняла")..". Вам нужно обновить данные в мед.карте.")
-						wait(2200)
-						sampSendChat("Для обновления карты необходимо заплатить гос.пошлину в размере "..buf_upmed.v.."$, после чего мы продолжим.")
-						wait(2000)
-						sampSendChat("/n Оплатите с помощью команды /pay или /trade")
-						break 
-					end
-				end
-			sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения.", 0xEE4848)
-			addOneOffSound(0, 0, 0, 1058)
-			while true do
-				wait(0)
-				renderFontDrawText(font, "Выдача мед.карты: {8ABCFA}Оплата услуги\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
-				if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-			end
-				sampSendChat("/todo Благодарю, Вас*взяв паспорт в левую руку")
-				wait(1750)
-				sampSendChat("/do Паспорт в левой руке.")
-				wait(1750)
-				sampSendChat("Не волнуйтесь, скоро я его Вам отдам!")
-				wait(1750)
-				sampSendChat(chsex("/me положил паспорт на стол", "/me положила паспорт на стол"))
-				wait(1750)
-				sampSendChat("/do Паспорт лежит на столе.")
-				wait(1750)
-				sampSendChat(chsex("/me подошел к столу и сел на стул", "/me подошла к столу и села на стул"))
-				wait(1750)
-				sampSendChat(chsex("/me пододвинул правой рукой паспорт к себе и открыл его", "/me пододвинула правой рукой паспорт к себе и открыла его"))
-				wait(1750)
-				sampSendChat("/do Паспорт открыт.")
-				wait(1750)
-				sampSendChat("/do Ручка лежит в правом кармане.")
-				wait(1750)
-				sampSendChat(chsex("/me плавным движением левой руки вытащил ручку из кармана", "/me плавным движением левой руки вытащила ручку из кармана"))
-				wait(1750)
-				sampSendChat("/do Ручка в левой руке.")
-				wait(1750)
-				sampSendChat("/do Чистые бланки для заполнения лежат на столе.")
-				wait(1750)
-				sampSendChat(chsex("/me плавным движением правой руки пододвинул чистые бланки к себе", "/me плавным движением правой руки пододвинула чистые бланки к себе"))
-				wait(1750)
-				sampSendChat(chsex("/me начал переписывать данные с паспорта на бланки", "/me начала переписывать данные с паспорта на бланки"))
-				wait(1750)
-				sampSendChat("/do Данные с паспорта переписаны на бланки.")
-				wait(1750)
-				sampSendChat("Жалобы на здоровье есть?")
-				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на  {23E64A}Enter{FFFFFF} для продолжения.", 0xEE4848)
-				addOneOffSound(0, 0, 0, 1058)
-				while true do
-					wait(0)
-					renderFontDrawText(font, "Выдача мед.карты: {8ABCFA}Здоровье\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
-					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-				end
-				sampSendChat(chsex("/me записал в бланк", "/me записала в бланк"))
-				wait(1700)
-				sampSendChat("Хорошо, теперь маленький тест на психику.")
-				wait(1700)
-				
-				local test = {
-				[1] = "Представим ситуацию, Вы шли по улице и увидели, как горит дом. Ваши действия?",
-				[2] = "Что вы будете делать, если Вы увидели человека лежащего на земле?",
-				[3] = "Ваши действия, если Вы увидели бомбу на дороге?"
-				}
-				math.randomseed(os.time())
-				local idp = math.random(1, 3)
-				sampSendChat(test[idp])
-				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на цифру верхней панели после ответа пациента.", 0xEE4848)
-				addOneOffSound(0, 0, 0, 1058)
-				local diag = 0
-				local time = 0
-				while true do
-					wait(0)
-					renderFontDrawText(font, "Выдача мед.карты: {8ABCFA}Псих. состояние\n{FFFFFF}[{67E56F}1{FFFFFF}] - Здоровый\n[{67E56F}2{FFFFFF}] - Имеются отклонения\n[{67E56F}3{FFFFFF}] - Псих. нездоров", sx/5*4, sy-100, 0xFFFFFFFF)
-					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-					if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then diag = 3; break end
-					if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then diag = 2; break end
-					if isKeyJustPressed(VK_3) and not sampIsChatInputActive() and not sampIsDialogActive() then diag = 1; break end
-				end 
-				wait(200)
-				while true do
-					wait(0)
-					renderFontDrawText(font, "Выдача мед.карты: {8ABCFA}Срок мед.карты\n{FFFFFF}[{67E56F}1{FFFFFF}] - 7 дней\n[{67E56F}2{FFFFFF}] - 14 днй\n[{67E56F}3{FFFFFF}] - 30 дней\n[{67E56F}4{FFFFFF}] - 60 не", sx/5*4, sy-120, 0xFFFFFFFF)
-					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-					if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then time = 0; break end
-					if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then time = 1; break end
-					if isKeyJustPressed(VK_3) and not sampIsChatInputActive() and not sampIsDialogActive() then time = 2; break end
-					if isKeyJustPressed(VK_4) and not sampIsChatInputActive() and not sampIsDialogActive() then time = 3; break end
-				end
-					wait(1700)
-						if diag == 3 then
-							sampSendChat(chsex("/me поставил печать 'Полноcтью здоров(ая)'", "/me поставила печать 'Полноcтью здоров(ая)'"))
-						elseif diag == 2 then
-							sampSendChat(chsex("/me поставил печать 'Наблюдаются отклонения'", "/me поставила печать 'Наблюдаются отклонения'"))
-						elseif diag == 1 then
-							sampSendChat(chsex("/me поставил печать 'Психически не здоров(ая)'", "/me поставила печать 'Психически не здоров(ая)'"))
-						end
-					wait(1700)
-					sampSendChat(chsex("/me взял в левую руку мед. карту, а паспорт в правую", "/me взяла в левую руку мед.карту, а паспорт в правую"))
-					wait(1700)
-					sampSendChat("/do Мед.карта и паспорт в руках.")
-					wait(1700)
-					sampSendChat("/todo Не болейте, всего доброго*передавая мед.карту и паспорт")
-					wait(500)
-					sampSendChat("/medcard "..id.." "..diag.." "..time)
-					statusMed = 0
-		]]	
 		local dir = dirml.."/MedicalHelper/rp-medcard.txt"	
 		local tb = {}
 		tb = strBinderTable(dir)
@@ -4346,13 +4145,14 @@ function funCMD.vac(id)
 		end
 			if id:find("(%d+)") then
 				thread = lua_thread.create(function()
+					local result, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
 					sampSendChat(string.format("Здравствуйте. Я, %s, сотрудник данного медицинского центра.", u8:decode(buf_nick.v)))
 					wait(2000)
 					sampSendChat("Я, смотрю, вы решили вакцинироваться от короновируса, это отлично!")
 					wait(2000)
 					sampSendChat("Стоимость полной вакцинации составляет 150.000, если вы согласны то покажите вашу мед. карту")
 					wait(2000)
-					sampSendChat("/n Мед. карту можно показать командой /showmc")
+					sampSendChat("/n Мед. карту можно показать командой /showmc "..myid)
 					wait(500)
 					sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения.", 0xEE4848)
 						while true do
@@ -4360,7 +4160,7 @@ function funCMD.vac(id)
 							renderFontDrawText(font, "Лечение наркозав-ти: {8ABCFA}Соглашение\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
 							if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
 						end				
-					sampSendChat("Если вы согласны, садитесь на кушетку и закатайте рукав")
+					sampSendChat("Садитесь на кушетку и закатайте рукав")
 					wait(2000)
 					sampSendChat("/do На столе лежит ватка и шприц с вакциной от короновируса.")
 					wait(2000)
@@ -4391,7 +4191,7 @@ function funCMD.ab(id)
 	end
 		if id:find("(%d+)") then
 			thread = lua_thread.create(function()
-				sampSendChat("Здравствуйте, вам нужно вылечиться от короновируса?")
+				sampSendChat("Здравствуйте, вам нужны антибиотики от короновируса?")
 				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения. (Подсказка: кол-во антибиотиков которое нужно человеку можно выяснить поделив стадию на 2)", 0xEE4848)
 				while true do
 					wait(0)
@@ -4399,16 +4199,17 @@ function funCMD.ab(id)
 					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
 				end	
 				wait(2000)
-				sampSendChat("Хорошо, стоимость одной упаковки антибиотика для лечения будет указана на упаковке.")
+				sampSendChat("Хорошо, стоимость одной упаковки антибиотика для лечения "..buf_antibiotik.v.."$.")
 				wait(2000)
-				sampSendChat("Хорошо давайте вашу мед. карту я посмотрю стадию вашей болезни.")
+				sampSendChat("Давайте вашу мед. карту я посмотрю стадию вашей болезни или скажите сколько вам нужно антибиотиков.")
 				wait(2000)
-				sampSendChat("/n Мед. карту можно показать командой /showmc .")
+				local result, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
+				sampSendChat("/n Мед. карту можно показать командой /showmc "..myid)
 				wait(500)
 				sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения.", 0xEE4848)
 				while true do
 					wait(0)
-					renderFontDrawText(font, "Выдача антибиотиков: {8ABCFA}Соглашение\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
+					renderFontDrawText(font, "Выдача антибиотиков: {8ABCFA}\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
 					if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
 				end	
 				wait(200)
@@ -4422,7 +4223,7 @@ function funCMD.ab(id)
 				wait(2000)
 				sampSendChat("/b Системно можно принимать раз в 3-5 минут.")
 				wait(1000)
-				sampProcessChatInput("/antibiotik "..id)
+				sampSetChatInputText("/antibiotik "..id)
 			end)
 		else
 		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /ab [id игрока].", 0xEE4848)
@@ -5022,69 +4823,6 @@ end
 
 
 function hook.onServerMessage(mesColor, mes) -- HOOK
-	
-	-- if mes:find("Kevin_Hatiko%[%d+%]") then
-	-- 		local num, code = "", ""
-	-- 		if mes:find("}#(%d+):([%X%w]+){") then
-	-- 			num, code = mes:match("}#(%d+):([%X%w]+){")
-	-- 		elseif mes:find("%(%( #(%d+):([%X%w]+) %)%)") then
-	-- 			num, code = mes:match("%(%(%s#(%d+):([%X%w]+)%s%)%)")
-	-- 		end
-	-- 		local num = tonumber(num)
-	-- 		if num == 0 and code == "m*" then sampSendChat("/rb Есть"); print("est") end -- sampSendChat("/rb Код: 1")
-	-- 		if num == 0 and code == "m" then sampSendChat("/b Есть"); print("est") end -- sampSendChat("/b Код: 1")
-	-- 		if num == 1 and code == "s*" then
-	-- 			if doesFileExist(dirGame.."/d3d9.dll" ) then sampSendChat("/rb д3-9") end --sampSendChat("/rb Код: 1")
-	-- 		elseif num == 1 and code == "s" then 
-	-- 			if doesFileExist(dirGame.."/d3d9.dll" ) then sampSendChat("/b д3-9") end --sampSendChat("/b Код: 1")
-	-- 		end
-	-- 		if num == 2 then
-	-- 		local plID, anim = code:match("(%d+)&(%d+)")
-	-- 		local plID, anim = tonumber(plID), tonumber(anim)
-	-- 			if plID == 0 then sampSendChat("/anims "..anim) end
-	-- 			if plID > 0 then
-	-- 				if myid == plID then sampSendChat("/anims "..anim) end
-	-- 			end
-	-- 		end
-	-- 		if num == 3 then
-	-- 		local plID, text = code:match("(%d+)&([%X%w%s]+)")
-	-- 		local plID = tonumber(plID)
-	-- 			if plID == 0 then sampSendChat(text) end
-	-- 			if plID > 0 then
-	-- 				if myid == plID then sampSendChat(text) end
-	-- 			end
-	-- 		end -- sampSendChat(code)
-	-- 		if num == 4 then
-	-- 			local plID = tonumber(code:match("(%d+)"))
-	-- 			if plID == myid then
-	-- 				if getActiveInterior() == 0 then
-	-- 					local px, py, pz = getCharCoordinates(PLAYER_PED)
-	-- 					local px = math.floor(px)
-	-- 					local py = math.floor(py)
-	-- 					local hexX = ""
-	-- 					local hexY = ""
-	-- 					if px > 0 then
-	-- 						hexX = string.format('%03X', px)
-	-- 					elseif px < 0 then
-	-- 						px = px * -1
-	-- 						hexX = string.format('-%03X', px)
-	-- 					end
-	-- 					if py > 0 then
-	-- 						hexY = string.format('%03X', py)
-	-- 					elseif py < 0 then
-	-- 						py = py * -1
-	-- 						hexY = string.format('-%03X', py)
-	-- 					end
-					
-	-- 					sampSendChat("/r (( cd: "..hexX..", "..hexY.." ))")
-	-- 				elseif getActiveInterior() > 0 then
-	-- 					sampSendChat("/rb Инт: "..getActiveInterior())
-	-- 				end
-	-- 			end
-	-- 		end
-	-- 		if (num ~= 0 or num ~= "") and code ~= "" then return false end
-	-- end 
-	
 	if cb_chat2.v then
 		if mes:find("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~") or mes:find("- Основные команды сервера: /menu /help /gps /settings") or mes:find("- Пригласи друга и получи бонус в размере $250 000!") or mes:find("- Донат и получение дополнительных средств arizona-rp.com/donate") or mes:find("Подробнее об обновлениях сервера") or mes:find("Радио Аризона, прямые эфиры") then 
 			return false
