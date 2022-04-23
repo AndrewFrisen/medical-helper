@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona Saint Rose")
-script_version("2.6.2")
+script_version("2.6.3")
 script_properties("work-in-pause")
 setver = 1
  
@@ -4912,21 +4912,6 @@ function hook.onServerMessage(mesColor, mes) -- HOOK
 		end
 	end
 end
-
-function hook.onDisplayGameText(st, time, text)
-	if text:find("~y~%d+ ~y~"..os.date("%B").."~n~~w~%d+:%d+~n~ ~g~ Played ~w~%d+ min") then
-		if cb_time.v then
-			lua_thread.create(function()
-			wait(100)
-			sampSendChat(u8:decode(buf_time.v))
-			if cb_timeDo.v then
-				wait(1000)
-				sampSendChat("/do Часы показывают время - "..os.date("%H:%M:%S"))
-			end
-			end)
-		end
-	end
-end
 function hook.onSendCommand(cmd)
 	if cmd:find("/r ") then
 		if cb_rac.v then
@@ -4935,6 +4920,18 @@ function hook.onSendCommand(cmd)
 			sampSendChat(u8:decode(buf_rac.v))
 			end)
 		end
+	end
+	if cmd:find("/time") then
+	lua_thread.create(function()
+		if buf_time.v then
+			wait(700)
+			sampSendChat(u8:decode(buf_time.v))
+		end
+		if cb_timeDo.v then
+			wait(1000)
+			sampSendChat("/do Часы показывают время - "..os.date("%H:%M:%S"))
+		end
+	end)
 	end
 end
 
