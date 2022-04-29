@@ -4923,7 +4923,7 @@ function hook.onSendCommand(cmd)
 	end
 	if cmd:find("/time") then
 	lua_thread.create(function()
-		if buf_time.v then
+		if cb_timeDo.v then
 			wait(700)
 			sampSendChat(u8:decode(buf_time.v))
 		end
