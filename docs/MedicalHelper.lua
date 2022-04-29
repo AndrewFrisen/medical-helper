@@ -1,6 +1,6 @@
 script_name("MedicalHelper")
-script_authors("Kevin Hatiko")
-script_description("Script for the Ministries of Health Arizona Saint Rose")
+script_authors("Kevin Hatiko && Andrew Frisen(")
+script_description("Доработка от ЗГСа МЗ 14 сервера")
 script_version("2.6.3")
 script_properties("work-in-pause")
 setver = 1
@@ -4923,7 +4923,7 @@ function hook.onSendCommand(cmd)
 	end
 	if cmd:find("/time") then
 	lua_thread.create(function()
-		if cb_timeDo.v then
+		if cb_time.v then
 			wait(700)
 			sampSendChat(u8:decode(buf_time.v))
 		end
