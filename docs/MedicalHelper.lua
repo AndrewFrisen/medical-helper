@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
-script_authors("Kevin Hatiko && Andrew Frisen(")
-script_description("Доработка от ЗГСа МЗ 14 сервера")
-script_version("2.6.3")
+script_authors("Kevin Hatiko")
+script_description("Script for the Ministries of Health Arizona Saint Rose")
+script_version("2.6.3.1")
 script_properties("work-in-pause")
 setver = 1
  
@@ -4150,35 +4150,55 @@ function funCMD.vac(id)
 					wait(2000)
 					sampSendChat("Я, смотрю, вы решили вакцинироваться от короновируса, это отлично!")
 					wait(2000)
-					sampSendChat("Стоимость полной вакцинации составляет 150.000, если вы согласны то покажите вашу мед. карту")
+					sampSendChat("Стоимость полной вакцинации составляет 150.000, если вы согласны то передайте мне вашу мед. карту")
 					wait(2000)
 					sampSendChat("/n Мед. карту можно показать командой /showmc "..myid)
 					wait(500)
-					sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения.", 0xEE4848)
+					sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}цифру из списка в углу{FFFFFF} для продолжения.", 0xEE4848)
+					local len = renderGetFontDrawTextLength(font, "Выбор вида вакцинации: {8ABCFA} Первая/Вторая/Болен")
 						while true do
-						wait(0)
-							renderFontDrawText(font, "Лечение наркозав-ти: {8ABCFA}Соглашение\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
-							if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
-						end				
-					sampSendChat("Садитесь на кушетку и закатайте рукав")
-					wait(2000)
-					sampSendChat("/do На столе лежит ватка и шприц с вакциной от короновируса.")
-					wait(2000)
-					sampSendChat("/me ".. chsex("взял", "взяла") .." ватку и ".. chsex("смочил", "смочила") .." её спиртом.")
-					wait(2000)
-					sampSendChat("/me протёр".. chsex("","ла") .." ваткой локтевой изгиб ваткой смоченой спиртом.")
-					wait(2000)
-					sampSendChat("/todo Не волнуйтесь,будет не больно*взяв со стола шприц с вакциной")
-					wait(2000)
-					sampSendChat("/me плавным движением правой руки делает укол.")
-					wait(2000)
-					sampSendChat("/todo Держите ватку*положив ватку на место укола")
-					wait(2000)
-					sampSendChat("/me выкинул".. chsex("", "а") .." шприц в специальную урну")
-					wait(2000)
-					sampSendChat("Если это для вас первая вакцинация, то жду вас через 5 минут на 2 укол.")
-					wait(2000)
-					sampProcessChatInput("/vaccine "..id:match("(%d+)"))
+							wait(0)		
+							renderFontDrawText(font, "Вакцинация: \n {67E56F}1.{ffffff} Первая вакцинация \n{FFFFFF} {67E56F}2.{ffffff} Вторая вакцинация \n {67E56F}3. {ffffff}Болеет короновирусом", sx-len-10, sy-150, 0xFFFFFFFF)			
+							if isKeyJustPressed(VK_1) and not sampIsChatInputActive() and not sampIsDialogActive() then vaccination =1; break end
+							if isKeyJustPressed(VK_2) and not sampIsChatInputActive() and not sampIsDialogActive() then vaccination =2; break end
+							if isKeyJustPressed(51) and not sampIsChatInputActive() and not sampIsDialogActive() then vaccination =3; break end
+						end
+					if vaccination == 3 then
+						wait(2000)
+						sampSendChat("Извините я не могу вас вакцинировать.")
+						wait(2000)
+						sampSendChat("Когда вы болейте вакцинироваться котегорически запрещено.")
+						wait(2000)
+						sampSendChat("Могу посоветоветовать купить у нас антибиотики, они помогут вам вылечится.")
+					else
+						wait(2000)
+						sampSendChat("/do На столе лежит ватка и шприц с вакциной от короновируса.")
+						wait(2000)
+						sampSendChat("/me ".. chsex("взял", "взяла") .." ватку и ".. chsex("смочил", "смочила") .." её спиртом.")
+						wait(2000)
+						sampSendChat("/me протёр".. chsex("","ла") .." ваткой локтевой изгиб ваткой смоченой спиртом.")
+						wait(2000)
+						sampSendChat("/todo Не волнуйтесь,будет не больно*взяв со стола шприц с вакциной.")
+						wait(2000)
+						sampSendChat("/me плавным движением правой руки делает укол.")
+						wait(2000)
+						sampSendChat("/todo Держите ватку*положив ватку на место укола.")
+						wait(2000)
+						sampSendChat("/me выкинул".. chsex("", "а") .." шприц в специальную урну.")
+						wait(2000)
+						if vaccination == 1 then 
+							sampSendChat("/me открыв мед. карту на странице 'Вакцинации', "..chsex("сделал","сделала").." записи в мед. карте об первой вакцинации.")
+							wait(2000)
+							sampSendChat("Жду вас через 2 минуты на второй укол вакцины, не отходите далеко от кабинета.") 
+						end
+						if vaccination == 2 then 
+							sampSendChat("/me открыв мед. карту на странице 'Вакцинации', "..chsex("сделал","сделала").." записи в мед. карте об полной вакцинации.")
+							wait(2000)
+							sampSendChat("/todo Поздравляю вас, вы полностью вакцинированы%передавая мед. карту пациенту") 
+						end
+						sampSendChat("/vaccine "..id:match("(%d+)"))
+						sampProcessChatInput("/vaccine "..id:match("(%d+)"))
+					end
 				end)
 			else
 			sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /vac [id игрока].", 0xEE4848)
