@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona Saint Rose")
-script_version("2.6.3.1")
+script_version("2.6.3.2")
 script_properties("work-in-pause")
 setver = 1
  
@@ -4189,12 +4189,14 @@ function funCMD.vac(id)
 						if vaccination == 1 then 
 							sampSendChat("/me открыв мед. карту на странице 'Вакцинации', "..chsex("сделал","сделала").." записи в мед. карте об первой вакцинации.")
 							wait(2000)
-							sampSendChat("Жду вас через 2 минуты на второй укол вакцины, не отходите далеко от кабинета.") 
+							sampSendChat("Жду вас через 2 минуты на второй укол вакцины, не отходите далеко от кабинета.")
+							wait(1500)
 						end
 						if vaccination == 2 then 
 							sampSendChat("/me открыв мед. карту на странице 'Вакцинации', "..chsex("сделал","сделала").." записи в мед. карте об полной вакцинации.")
 							wait(2000)
-							sampSendChat("/todo Поздравляю вас, вы полностью вакцинированы%передавая мед. карту пациенту") 
+							sampSendChat("/todo Поздравляю вас, вы полностью вакцинированы*передавая мед. карту пациенту") 
+							wait(1500)
 						end
 						sampSendChat("/vaccine "..id:match("(%d+)"))
 						sampProcessChatInput("/vaccine "..id:match("(%d+)"))
