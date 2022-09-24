@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
-script_description("Script for the Ministries of Health Arizona Saint Rose")
-script_version("2.6.3.2")
+script_description("Script for the Ministries of Health Arizona RP")
+script_version("2.6.4")
 script_properties("work-in-pause")
 setver = 1
  
@@ -710,6 +710,13 @@ cmdBind = {
 		desc = "Продажа антибиотиков",
 		rank = 4,
 		rb = false
+	},
+	[26] = {
+		cmd = "/medins",
+		key = {},
+		desc = 'Оформление медицинской страховки',
+		rank = 5,
+		rb = false
 	}
 }
 
@@ -1151,6 +1158,7 @@ function main()
 		sampRegisterChatCommand("mb", funCMD.memb)
 		sampRegisterChatCommand("vac", funCMD.vac)
 		sampRegisterChatCommand("ab", funCMD.ab)
+		sampRegisterChatCommand("medins", funCMD.insurance)
 		sampRegisterChatCommand("hme", funCMD.hme)
 		sampRegisterChatCommand("sob", funCMD.sob)
 		sampRegisterChatCommand("dep", funCMD.dep)
@@ -3627,6 +3635,13 @@ function onHotKeyCMD(id, keys)
 						sampSetChatInputEnabled(true)
 						sampSetChatInputText("/ab ")
 					end
+				elseif k == 26 then
+					if resTarg then
+						funCMD.insurance(tostring(targID))
+					else
+						sampSetChatInputEnabled(true)
+						sampSetChatInputText("/givemedinsurance "..tostring(targID))
+					end
 				end
 			end
 		end
@@ -4042,7 +4057,7 @@ function funCMD.lec(id)
 				wait(2000)
 				sampSendChat("Принимайте эти таблетки, и через некоторое время вам станет лучше")
 				wait(100)
-				sampSendChat("/heal "..id)
+				sampSendChat("/heal "..id.." "..buf_lec)
 			elseif isCharInModel(PLAYER_PED, 416) then
 				sampSendChat("Здравствуйте, что с Вами случилось?")
 				wait(2000)
@@ -4206,6 +4221,56 @@ function funCMD.vac(id)
 			sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /vac [id игрока].", 0xEE4848)
 			end
 end
+function funCMD.insurance(id)
+	if thread:status() ~= "dead" then 
+			sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: В данный момент проигрывается отыгровка.", 0xEE4848)
+			return 
+		end
+			if id:find("(%d+)") then
+				thread = lua_thread.create(function()
+						local result, myid = sampGetPlayerIdByCharHandle(PLAYER_PED)
+						sampSendChat(string.format("Здравствуйте. Я, %s, сотрудник данного медицинского центра.", u8:decode(buf_nick.v)))
+						wait(2000)
+						sampSendChat("Я, смотрю, вы решили оформить медицинскую страховку.")
+						wait(2000)
+						sampSendChat("Для этого мне нужен ваш паспорт.")
+						wait(2000)
+						sampSendChat("/n Паспорт можно показать командой /showpass "..myid)
+						wait(2000)
+						sampSendChat("/todo На сколько вам нужна страховка? Здесь указаны цены*указав на листочек в подставке")
+						wait(2000)
+						sampSendChat("/do На листочке написано:")
+						wait(2000)
+						sampSendChat("/do Стоимость медицинского страхования: 7 дней - 4OO.OOO$.")
+						wait(2000)
+						sampSendChat("/do 14 дней - 8OO.OOO$.")
+						wait(2000)
+						sampSendChat("/do 21 день - 1.2OO.OOO$.")
+						wait(2000)
+						sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Нажмите на {23E64A}Enter{FFFFFF} для продолжения. (Подсказка: кол-во антибиотиков которое нужно человеку можно выяснить поделив стадию на 2)", 0xEE4848)
+						while true do
+							wait(0)
+							renderFontDrawText(font, "Выдача антибиотиков: {8ABCFA}Соглашение\n{FFFFFF}[{67E56F}Enter{FFFFFF}] - Продолжить", sx/5*4, sy-50, 0xFFFFFFFF)
+							if isKeyJustPressed(VK_RETURN) and not sampIsChatInputActive() and not sampIsDialogActive() then break end
+						end	
+						wait(2000)
+						sampSendChat("/do На столе лежат белые бланки для оформления страховки.")
+						wait(2000)
+						sampSendChat("/me ".. chsex("взял", "взяла") .." белые бланки для оформления страховки и "..chsex("достал", "достала").." ручку из нагрудного кармана.")
+						wait(2000)
+						sampSendChat("/me лёгким движением руки ".. chsex("заполнил", "заполнила") .." бланк и ".. chsex("передал", "передала") .." пациенту для дальнейшей оплаты.")
+						wait(2000)
+						sampSendChat("Вот документ для оплаты, оплатите его и в течении 5 рабочих дней ...")
+						wait(2000)
+						sampSendChat("...вам вышлют страховку на адрес который вы укажите при оплате.")
+						wait(500)
+						sampSendChat("/givemedinsurance "..id:match("(%d+)"))
+						sampProcessChatInput("/givemedinsurance "..id:match("(%d+)"))
+				end)
+			else
+			sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /medins [id игрока].", 0xEE4848)
+			end
+end
 function funCMD.ab(id)
 	if thread:status() ~= "dead" then 
 		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: В данный момент проигрывается отыгровка.", 0xEE4848)
@@ -4254,6 +4319,7 @@ function funCMD.ab(id)
 		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: Используйте команду /ab [id игрока].", 0xEE4848)
 		end
 end
+
 function funCMD.rec(id)
 	if thread:status() ~= "dead" then 
 		sampAddChatMessage("{FFFFFF}[{EE4848}MedicalHelper{FFFFFF}]: В данный момент проигрывается отыгровка.", 0xEE4848)
