@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona RP")
-script_version("2.6.4")
+script_version("2.6.4.1")
 script_properties("work-in-pause")
 setver = 1
  
@@ -4057,7 +4057,7 @@ function funCMD.lec(id)
 				wait(2000)
 				sampSendChat("Принимайте эти таблетки, и через некоторое время вам станет лучше")
 				wait(100)
-				sampSendChat("/heal "..id.." "..buf_lec)
+				sampSendChat("/heal "..id.." "..buf_lec.v)
 			elseif isCharInModel(PLAYER_PED, 416) then
 				sampSendChat("Здравствуйте, что с Вами случилось?")
 				wait(2000)
