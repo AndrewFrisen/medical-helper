@@ -1,3 +1,8 @@
+Medical Helper Update
+##
+Cписок изменений:
+
+
 ## 
 Авторство всего функционала до даты 05 Января 2022 года - TheMrThor | Kevin Hatiko.
 Ссылка на репозиторий автора с оригинальным скриптом без модификаций - https://github.com/TheMrThor/MedicalHelper/releases/
