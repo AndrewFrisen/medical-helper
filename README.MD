@@ -1,7 +1,7 @@
 Medical Helper Update
 ##
 Cписок изменений:
-
+https://github.com/AndrewFrisen/medical-helper/blob/main/docs/update.txt
 
 ## 
 Авторство всего функционала до даты 05 Января 2022 года - TheMrThor | Kevin Hatiko.
