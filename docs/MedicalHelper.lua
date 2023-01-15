@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona RP")
-script_version("2.6.5")
+script_version("2.6.5.1")
 script_properties("work-in-pause")
 setver = 1
  
@@ -1025,7 +1025,7 @@ function main()
 				num_org.v = set.org
 				num_sex.v = set.sex
 				num_rank.v = set.rank
-				player_info.msg_delay = set.delay
+				if set.delay then player_info.msg_delay = set.delay else sampAddChatMessage('set.delay не найдена, сохраняю стандартные значения') end
 				player_info.RolePlay.cb_time.v = set.time
 				player_info.RolePlay.buf_time.v = u8(set.timeTx)
 				player_info.RolePlay.cb_timeDo.v = set.timeDo
