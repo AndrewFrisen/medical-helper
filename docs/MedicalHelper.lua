@@ -1,7 +1,7 @@
 script_name("MedicalHelper")
 script_authors("Kevin Hatiko")
 script_description("Script for the Ministries of Health Arizona RP")
-script_version("2.6.5.1")
+script_version("2.6.5.2")
 script_properties("work-in-pause")
 setver = 1
  
@@ -4177,7 +4177,7 @@ function funCMD.vac(id)
 						wait(tonumber(player_info.msg_delay))
 						sampSendChat("я, смотрю, вы решили вакцинироватьс€ от короновируса, это отлично!")
 						wait(tonumber(player_info.msg_delay))
-						sampSendChat("—тоимость полной вакцинации составл€ет 150.000, если вы согласны то передайте мне вашу мед. карту")
+						sampSendChat("—тоимость полной вакцинации составл€ет 600.000, если вы согласны то передайте мне вашу мед. карту")
 						wait(tonumber(player_info.msg_delay))
 						sampSendChat("/n ћед. карту можно показать командой /showmc "..myid)
 						wait(500)
